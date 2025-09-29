@@ -1,0 +1,42 @@
+[
+  {
+    "id": "user-1",
+    "name": "Ahmad Bendahara",
+    "email": "bendahara@internal.id",
+    "role": "BENDAHARA",
+    "passwordHash": "$2a$10$hash1",
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "id": "user-2", 
+    "name": "Siti Sekretaris",
+    "email": "sekretaris@internal.id",
+    "role": "SEKRETARIS",
+    "passwordHash": "$2a$10$hash2",
+    "createdAt": "2024-01-16T08:00:00Z"
+  },
+  {
+    "id": "user-3",
+    "name": "Budi Anggota",
+    "email": "anggota1@internal.id", 
+    "role": "ANGGOTA",
+    "passwordHash": "$2a$10$hash3",
+    "createdAt": "2024-01-17T08:00:00Z"
+  },
+  {
+    "id": "user-4",
+    "name": "Rina Anggota",
+    "email": "anggota2@internal.id",
+    "role": "ANGGOTA", 
+    "passwordHash": "$2a$10$hash4",
+    "createdAt": "2024-01-18T08:00:00Z"
+  },
+  {
+    "id": "user-5",
+    "name": "Doni Anggota",
+    "email": "anggota3@internal.id",
+    "role": "ANGGOTA",
+    "passwordHash": "$2a$10$hash5",
+    "createdAt": "2024-01-19T08:00:00Z"
+  }
+]

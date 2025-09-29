@@ -1,0 +1,122 @@
+[
+  {
+    "id": "member-1",
+    "name": "Ahmad Bendahara",
+    "email": "bendahara@internal.id",
+    "role": "BENDAHARA",
+    "status": "AKTIF",
+    "joinedAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "id": "member-2",
+    "name": "Siti Sekretaris", 
+    "email": "sekretaris@internal.id",
+    "role": "SEKRETARIS",
+    "status": "AKTIF",
+    "joinedAt": "2024-01-16T08:00:00Z"
+  },
+  {
+    "id": "member-3",
+    "name": "Budi Anggota",
+    "email": "anggota1@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF", 
+    "joinedAt": "2024-01-17T08:00:00Z"
+  },
+  {
+    "id": "member-4",
+    "name": "Rina Anggota",
+    "email": "anggota2@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-01-18T08:00:00Z"
+  },
+  {
+    "id": "member-5",
+    "name": "Doni Anggota",
+    "email": "anggota3@internal.id", 
+    "role": "ANGGOTA",
+    "status": "NONAKTIF",
+    "joinedAt": "2024-01-19T08:00:00Z"
+  },
+  {
+    "id": "member-6",
+    "name": "Lisa Marketing",
+    "email": "lisa@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-02-01T08:00:00Z"
+  },
+  {
+    "id": "member-7",
+    "name": "Rudi IT",
+    "email": "rudi@internal.id",
+    "role": "ANGGOTA", 
+    "status": "AKTIF",
+    "joinedAt": "2024-02-05T08:00:00Z"
+  },
+  {
+    "id": "member-8",
+    "name": "Maya Admin",
+    "email": "maya@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-02-10T08:00:00Z"
+  },
+  {
+    "id": "member-9",
+    "name": "Toni Finance",
+    "email": "toni@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-02-15T08:00:00Z"
+  },
+  {
+    "id": "member-10",
+    "name": "Sari HR",
+    "email": "sari@internal.id", 
+    "role": "ANGGOTA",
+    "status": "NONAKTIF",
+    "joinedAt": "2024-02-20T08:00:00Z"
+  },
+  {
+    "id": "member-11",
+    "name": "Bayu Developer",
+    "email": "bayu@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-03-01T08:00:00Z"
+  },
+  {
+    "id": "member-12",
+    "name": "Nina Design",
+    "email": "nina@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-03-05T08:00:00Z"
+  },
+  {
+    "id": "member-13",
+    "name": "Eko Sales",
+    "email": "eko@internal.id",
+    "role": "ANGGOTA", 
+    "status": "AKTIF",
+    "joinedAt": "2024-03-10T08:00:00Z"
+  },
+  {
+    "id": "member-14",
+    "name": "Dewi Content",
+    "email": "dewi@internal.id",
+    "role": "ANGGOTA",
+    "status": "AKTIF",
+    "joinedAt": "2024-03-15T08:00:00Z"
+  },
+  {
+    "id": "member-15",
+    "name": "Hadi Support", 
+    "email": "hadi@internal.id",
+    "role": "ANGGOTA",
+    "status": "NONAKTIF",
+    "joinedAt": "2024-03-20T08:00:00Z"
+  }
+]
