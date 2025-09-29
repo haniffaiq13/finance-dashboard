@@ -15,7 +15,7 @@ import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
 import { TrendLineChart } from '@/components/charts/TrendLineChart';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { DollarSign, TrendingUp, TrendingDown, BarChart3, Filter, RefreshCw } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, ChartBar as BarChart3, Filter, RefreshCw } from 'lucide-react';
 
 interface ChartData {
   monthly: Array<{ month: string; income: number; expense: number; balance: number }>;
