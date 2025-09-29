@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { formatCurrency } from '@/lib/format';
 
-interface CategoryPieChartProps {
+interface CategoryDonutChartProps {
   data: Array<{
     category: string;
     amount: number;
@@ -15,7 +15,7 @@ const COLORS = [
   '#82CA9D', '#FFC658', '#FF7C7C', '#8DD1E1', '#D084D0'
 ];
 
-export function CategoryPieChart({ data }: CategoryPieChartProps) {
+export function CategoryDonutChart({ data }: CategoryDonutChartProps) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -75,6 +75,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
             labelLine={false}
             label={CustomLabel}
             outerRadius={120}
+            innerRadius={60}
             fill="#8884d8"
             dataKey="amount"
           >
@@ -94,6 +95,14 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
           />
         </PieChart>
       </ResponsiveContainer>
+      
+      {/* Center text showing total */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="text-center">
+          <div className="text-sm text-muted-foreground">Total</div>
+          <div className="text-lg font-bold">{formatCurrency(totalAmount)}</div>
+        </div>
+      </div>
     </div>
   );
 }

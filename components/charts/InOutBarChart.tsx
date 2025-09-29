@@ -40,19 +40,36 @@ export function InOutBarChart({ data }: InOutBarChartProps) {
   return (
     <div className="w-full h-[300px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
+        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis 
             dataKey="month" 
             tickFormatter={formatMonth}
+            fontSize={12}
+            stroke="#64748b"
           />
-          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+          <YAxis 
+            tickFormatter={(value) => formatCurrency(value)}
+            fontSize={12}
+            stroke="#64748b"
+          />
           <Tooltip content={<CustomTooltip />} />
           <Legend 
             formatter={(value) => value === 'income' ? 'Pemasukan' : 'Pengeluaran'}
+            wrapperStyle={{ paddingTop: '20px' }}
           />
-          <Bar dataKey="income" fill="#10b981" name="income" />
-          <Bar dataKey="expense" fill="#ef4444" name="expense" />
+          <Bar 
+            dataKey="income" 
+            fill="#10b981" 
+            name="income"
+            radius={[4, 4, 0, 0]}
+          />
+          <Bar 
+            dataKey="expense" 
+            fill="#ef4444" 
+            name="expense"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

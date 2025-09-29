@@ -48,21 +48,21 @@ export function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed left-0 top-0 z-40 h-full w-64 bg-white border-r transition-transform duration-300 ease-in-out",
+          "fixed left-0 top-0 z-40 h-full w-64 bg-white border-r shadow-lg transition-transform duration-300 ease-in-out",
           "md:translate-x-0 md:static md:z-0",
           isCollapsed ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="border-b p-2">
+          <div className="border-b p-4 bg-gray-50/50">
             <div className="flex items-center space-x-3">
               <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center">
                 <BarChart3 className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <h1 className="text-lg font-semibold">Internal Dashboard</h1>
-                <p className="text-sm text-muted-foreground">{user.role}</p>
+                <p className="text-xs text-muted-foreground">{user.role}</p>
               </div>
             </div>
           </div>
@@ -79,10 +79,10 @@ export function Sidebar() {
                   href={item.href}
                   onClick={() => setIsCollapsed(false)}
                   className={cn(
-                    "flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -93,9 +93,9 @@ export function Sidebar() {
           </nav>
 
           {/* User info and logout */}
-          <div className="border-t p-4">
+          <div className="border-t p-4 bg-gray-50/50">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="h-10 w-10 bg-muted rounded-full flex items-center justify-center">
+              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center">
                 <User className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">

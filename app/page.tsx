@@ -11,9 +11,11 @@ import { formatCurrency } from '@/lib/format';
 import { BalanceLineChart } from '@/components/charts/BalanceLineChart';
 import { InOutBarChart } from '@/components/charts/InOutBarChart';
 import { CategoryPieChart } from '@/components/charts/CategoryPieChart';
+import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart';
+import { TrendLineChart } from '@/components/charts/TrendLineChart';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { DollarSign, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, BarChart3, Filter, RefreshCw } from 'lucide-react';
 
 interface ChartData {
   monthly: Array<{ month: string; income: number; expense: number; balance: number }>;
@@ -31,10 +33,10 @@ export default function Dashboard() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [chartData, setChartData] = useState<ChartData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
-  // JANGAN pakai string kosong untuk Select. Pakai undefined saat “belum pilih”.
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -54,10 +56,12 @@ export default function Dashboard() {
 
   const loadData = async () => {
     try {
-      setIsLoading(true);
+      if (!summary) setIsLoading(true);
+      else setIsRefreshing(true);
+      
       const [summaryData, chartData] = await Promise.all([
-        financeAPI.getSummary(dateFrom, dateTo /* TODO: terapkan selectedCategory jika API mendukung */),
-        financeAPI.getChartData(dateFrom, dateTo /* TODO: terapkan selectedCategory jika API mendukung */),
+        financeAPI.getSummary(dateFrom, dateTo),
+        financeAPI.getChartData(dateFrom, dateTo),
       ]);
       setSummary(summaryData);
       setChartData(chartData);
@@ -65,27 +69,31 @@ export default function Dashboard() {
       console.error('Failed to load dashboard data:', error);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   const loadCategories = async () => {
     try {
       const categoryList = await financeAPI.getCategories();
-      setCategories(categoryList.filter(Boolean)); // buang kosong/null
+      setCategories(categoryList.filter(Boolean));
     } catch (error) {
       console.error('Failed to load categories:', error);
     }
   };
 
   const handleFilterReset = () => {
-    setSelectedCategory(undefined); // BUKAN ""
+    setSelectedCategory(undefined);
     const now = new Date();
     const twelveMonthsAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1);
     setDateFrom(twelveMonthsAgo.toISOString().split('T')[0]);
     setDateTo(now.toISOString().split('T')[0]);
   };
 
-  // handler Select: "ALL" dianggap clear (undefined)
+  const handleRefresh = () => {
+    loadData();
+  };
+
   const onCategoryChange = (val: string) => {
     if (val === 'ALL') setSelectedCategory(undefined);
     else setSelectedCategory(val);
@@ -96,10 +104,13 @@ export default function Dashboard() {
       <ProtectedRoute>
         <div className="flex">
           <Sidebar />
-          <div className="">
-            <div className="p-6">
+          <div className="flex-1 min-h-screen bg-gray-50/50">
+            <div className="container mx-auto p-4 sm:p-6 lg:p-8">
               <div className="flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <div className="text-center space-y-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-muted-foreground">Memuat data dashboard...</p>
+                </div>
               </div>
             </div>
           </div>
@@ -112,23 +123,37 @@ export default function Dashboard() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="">
-          <div className="p-6">
+        <div className="flex-1 overflow-auto">
+          <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
             {/* Header */}
-            <div>
-              <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-muted-foreground">
-                Ringkasan keuangan dan statistik organisasi
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
+                <p className="text-muted-foreground">
+                  Ringkasan keuangan dan statistik organisasi
+                </p>
+              </div>
+              <Button 
+                onClick={handleRefresh} 
+                disabled={isRefreshing}
+                variant="outline"
+                size="sm"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                {isRefreshing ? 'Memuat...' : 'Refresh'}
+              </Button>
             </div>
 
             {/* Filters */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Filter</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Filter className="h-5 w-5" />
+                  Filter Data
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label htmlFor="dateFrom">Tanggal Mulai</Label>
                     <Input
@@ -136,6 +161,7 @@ export default function Dashboard() {
                       type="date"
                       value={dateFrom}
                       onChange={(e) => setDateFrom(e.target.value)}
+                      className="mt-1"
                     />
                   </div>
                   <div>
@@ -145,17 +171,16 @@ export default function Dashboard() {
                       type="date"
                       value={dateTo}
                       onChange={(e) => setDateTo(e.target.value)}
+                      className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="category">Kategori</Label>
-                    {/* value harus undefined untuk placeholder, jangan "" */}
                     <Select value={selectedCategory ?? undefined} onValueChange={onCategoryChange}>
-                      <SelectTrigger>
+                      <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Semua kategori" />
                       </SelectTrigger>
                       <SelectContent>
-                        {/* Jangan pernah value="" */}
                         <SelectItem value="ALL">Semua kategori</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
@@ -166,7 +191,7 @@ export default function Dashboard() {
                     </Select>
                   </div>
                   <div>
-                    <Button variant="outline" onClick={handleFilterReset}>
+                    <Button variant="outline" onClick={handleFilterReset} className="w-full">
                       Reset Filter
                     </Button>
                   </div>
@@ -176,14 +201,14 @@ export default function Dashboard() {
 
             {/* Summary Cards */}
             {summary && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Pemasukan</CardTitle>
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-xl sm:text-2xl font-bold text-green-600">
                       {formatCurrency(summary.totalIncome)}
                     </div>
                   </CardContent>
@@ -195,7 +220,7 @@ export default function Dashboard() {
                     <TrendingDown className="h-4 w-4 text-red-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-xl sm:text-2xl font-bold text-red-600">
                       {formatCurrency(summary.totalExpense)}
                     </div>
                   </CardContent>
@@ -207,7 +232,7 @@ export default function Dashboard() {
                     <DollarSign className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className={`text-2xl font-bold ${summary.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`text-xl sm:text-2xl font-bold ${summary.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(summary.balance)}
                     </div>
                   </CardContent>
@@ -219,7 +244,7 @@ export default function Dashboard() {
                     <BarChart3 className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">
+                    <div className="text-xl sm:text-2xl font-bold">
                       {summary.transactionCount}
                     </div>
                   </CardContent>
@@ -229,10 +254,43 @@ export default function Dashboard() {
 
             {/* Charts */}
             {chartData && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+              <div className="space-y-6">
+                {/* Top Row - Line Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Trend Saldo Bulanan</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <TrendLineChart 
+                        data={chartData.monthly.map(item => ({
+                          month: item.month,
+                          balance: item.balance
+                        }))} 
+                      />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Pemasukan vs Pengeluaran</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <InOutBarChart 
+                        data={chartData.monthly.map(item => ({
+                          month: item.month,
+                          income: item.income,
+                          expense: item.expense
+                        }))} 
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Middle Row - Balance Line Chart */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Saldo Per Bulan</CardTitle>
+                    <CardTitle>Grafik Saldo Kumulatif</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <BalanceLineChart 
@@ -244,29 +302,27 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Pemasukan vs Pengeluaran</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <InOutBarChart 
-                      data={chartData.monthly.map(item => ({
-                        month: item.month,
-                        income: item.income,
-                        expense: item.expense
-                      }))} 
-                    />
-                  </CardContent>
-                </Card>
+                {/* Bottom Row - Category Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Distribusi Kategori (Pie Chart)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CategoryPieChart data={chartData.categories} />
+                    </CardContent>
+                  </Card>
 
-                <Card className="lg:col-span-2">
-                  <CardHeader>
-                    <CardTitle>Kategori Pengeluaran</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CategoryPieChart data={chartData.categories} />
-                  </CardContent>
-                </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Distribusi Kategori (Donut Chart)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CategoryDonutChart data={chartData.categories} />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
               </div>
             )}
           </div>

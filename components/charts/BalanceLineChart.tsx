@@ -22,11 +22,12 @@ export function BalanceLineChart({ data }: BalanceLineChartProps) {
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const value = payload[0].value;
       return (
         <div className="bg-white border rounded-lg p-3 shadow-md">
           <p className="font-medium">{formatMonth(label)}</p>
-          <p className="text-blue-600">
-            Saldo: {formatCurrency(payload[0].value)}
+          <p className={`font-semibold ${value >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            Saldo: {formatCurrency(value)}
           </p>
         </div>
       );
@@ -35,23 +36,29 @@ export function BalanceLineChart({ data }: BalanceLineChartProps) {
   };
 
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
+        <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis 
             dataKey="month" 
             tickFormatter={formatMonth}
+            fontSize={12}
+            stroke="#64748b"
           />
-          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+          <YAxis 
+            tickFormatter={(value) => formatCurrency(value)}
+            fontSize={12}
+            stroke="#64748b"
+          />
           <Tooltip content={<CustomTooltip />} />
           <Line 
             type="monotone" 
             dataKey="balance" 
-            stroke="#2563eb" 
-            strokeWidth={2}
-            dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6, stroke: '#2563eb', strokeWidth: 2 }}
+            stroke="#10b981" 
+            strokeWidth={3}
+            dot={{ fill: '#10b981', strokeWidth: 2, r: 5 }}
+            activeDot={{ r: 7, stroke: '#10b981', strokeWidth: 2, fill: '#ffffff' }}
           />
         </LineChart>
       </ResponsiveContainer>
