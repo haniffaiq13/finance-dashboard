@@ -52,13 +52,14 @@ export default function Dashboard() {
       loadData();
       loadCategories();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFrom, dateTo, selectedCategory]);
 
   const loadData = async () => {
     try {
       if (!summary) setIsLoading(true);
       else setIsRefreshing(true);
-      
+
       const [summaryData, chartData] = await Promise.all([
         financeAPI.getSummary(dateFrom, dateTo),
         financeAPI.getChartData(dateFrom, dateTo),
@@ -129,16 +130,9 @@ export default function Dashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">
-                  Ringkasan keuangan dan statistik organisasi
-                </p>
+                <p className="text-muted-foreground">Ringkasan keuangan dan statistik organisasi</p>
               </div>
-              <Button 
-                onClick={handleRefresh} 
-                disabled={isRefreshing}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={handleRefresh} disabled={isRefreshing} variant="outline" size="sm">
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                 {isRefreshing ? 'Memuat...' : 'Refresh'}
               </Button>
@@ -156,27 +150,15 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label htmlFor="dateFrom">Tanggal Mulai</Label>
-                    <Input
-                      id="dateFrom"
-                      type="date"
-                      value={dateFrom}
-                      onChange={(e) => setDateFrom(e.target.value)}
-                      className="mt-1"
-                    />
+                    <Input id="dateFrom" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="dateTo">Tanggal Akhir</Label>
-                    <Input
-                      id="dateTo"
-                      type="date"
-                      value={dateTo}
-                      onChange={(e) => setDateTo(e.target.value)}
-                      className="mt-1"
-                    />
+                    <Input id="dateTo" type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="category">Kategori</Label>
-                    <Select value={selectedCategory ?? undefined} onValueChange={onCategoryChange}>
+                    <Select value={selectedCategory} onValueChange={onCategoryChange}>
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Semua kategori" />
                       </SelectTrigger>
@@ -208,9 +190,7 @@ export default function Dashboard() {
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl sm:text-2xl font-bold text-green-600">
-                      {formatCurrency(summary.totalIncome)}
-                    </div>
+                    <div className="text-xl sm:text-2xl font-bold text-green-600">{formatCurrency(summary.totalIncome)}</div>
                   </CardContent>
                 </Card>
 
@@ -220,9 +200,7 @@ export default function Dashboard() {
                     <TrendingDown className="h-4 w-4 text-red-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl sm:text-2xl font-bold text-red-600">
-                      {formatCurrency(summary.totalExpense)}
-                    </div>
+                    <div className="text-xl sm:text-2xl font-bold text-red-600">{formatCurrency(summary.totalExpense)}</div>
                   </CardContent>
                 </Card>
 
@@ -244,9 +222,7 @@ export default function Dashboard() {
                     <BarChart3 className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl sm:text-2xl font-bold">
-                      {summary.transactionCount}
-                    </div>
+                    <div className="text-xl sm:text-2xl font-bold">{summary.transactionCount}</div>
                   </CardContent>
                 </Card>
               </div>
@@ -262,11 +238,8 @@ export default function Dashboard() {
                       <CardTitle>Trend Saldo Bulanan</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <TrendLineChart 
-                        data={chartData.monthly.map(item => ({
-                          month: item.month,
-                          balance: item.balance
-                        }))} 
+                      <TrendLineChart
+                        data={chartData.monthly.map((item) => ({ month: item.month, balance: item.balance }))}
                       />
                     </CardContent>
                   </Card>
@@ -276,12 +249,8 @@ export default function Dashboard() {
                       <CardTitle>Pemasukan vs Pengeluaran</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <InOutBarChart 
-                        data={chartData.monthly.map(item => ({
-                          month: item.month,
-                          income: item.income,
-                          expense: item.expense
-                        }))} 
+                      <InOutBarChart
+                        data={chartData.monthly.map((item) => ({ month: item.month, income: item.income, expense: item.expense }))}
                       />
                     </CardContent>
                   </Card>
@@ -293,12 +262,7 @@ export default function Dashboard() {
                     <CardTitle>Grafik Saldo Kumulatif</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <BalanceLineChart 
-                      data={chartData.monthly.map(item => ({
-                        month: item.month,
-                        balance: item.balance
-                      }))} 
-                    />
+                    <BalanceLineChart data={chartData.monthly.map((item) => ({ month: item.month, balance: item.balance }))} />
                   </CardContent>
                 </Card>
 
@@ -322,7 +286,6 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
                 </div>
-              </div>
               </div>
             )}
           </div>
