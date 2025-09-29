@@ -136,7 +136,7 @@ export function MemberForm({
             <RadioGroup
               value={form.watch('status')}
               onValueChange={(value: 'AKTIF' | 'NONAKTIF') => form.setValue('status', value)}
-              className="flex gap-6"
+              className="flex gap-2"
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="AKTIF" id="aktif" />

@@ -288,7 +288,7 @@ export function TransactionForm({
                 {attachments.map((attachment) => (
                   <div
                     key={attachment.id}
-                    className="flex items-center justify-between p-2 border rounded-md"
+                    className="flex items-center justify-between p-6 border rounded-md"
                   >
                     <div className="flex items-center space-x-2">
                       {attachment.mimeType.startsWith('image/') ? (

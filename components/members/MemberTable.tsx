@@ -140,7 +140,7 @@ export function MemberTable({
               </TableCell>
               {canEdit && (
                 <TableCell>
-                  <div className="flex gap-2">
+                  <div className="flex gap-6">
                     <Button
                       variant="ghost"
                       size="sm"

@@ -13,7 +13,7 @@ import { InOutBarChart } from '@/components/charts/InOutBarChart';
 import { CategoryPieChart } from '@/components/charts/CategoryPieChart';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { DollarSign, TrendingUp, TrendingDown, ChartBar as BarChart3 } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 
 interface ChartData {
   monthly: Array<{ month: string; income: number; expense: number; balance: number }>;
@@ -34,7 +34,8 @@ export default function Dashboard() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  // JANGAN pakai string kosong untuk Select. Pakai undefined saat “belum pilih”.
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // Set default date range to last 12 months
@@ -55,8 +56,8 @@ export default function Dashboard() {
     try {
       setIsLoading(true);
       const [summaryData, chartData] = await Promise.all([
-        financeAPI.getSummary(dateFrom, dateTo),
-        financeAPI.getChartData(dateFrom, dateTo)
+        financeAPI.getSummary(dateFrom, dateTo /* TODO: terapkan selectedCategory jika API mendukung */),
+        financeAPI.getChartData(dateFrom, dateTo /* TODO: terapkan selectedCategory jika API mendukung */),
       ]);
       setSummary(summaryData);
       setChartData(chartData);
@@ -70,18 +71,24 @@ export default function Dashboard() {
   const loadCategories = async () => {
     try {
       const categoryList = await financeAPI.getCategories();
-      setCategories(categoryList);
+      setCategories(categoryList.filter(Boolean)); // buang kosong/null
     } catch (error) {
       console.error('Failed to load categories:', error);
     }
   };
 
   const handleFilterReset = () => {
-    setSelectedCategory('');
+    setSelectedCategory(undefined); // BUKAN ""
     const now = new Date();
     const twelveMonthsAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1);
     setDateFrom(twelveMonthsAgo.toISOString().split('T')[0]);
     setDateTo(now.toISOString().split('T')[0]);
+  };
+
+  // handler Select: "ALL" dianggap clear (undefined)
+  const onCategoryChange = (val: string) => {
+    if (val === 'ALL') setSelectedCategory(undefined);
+    else setSelectedCategory(val);
   };
 
   if (isLoading) {
@@ -89,7 +96,7 @@ export default function Dashboard() {
       <ProtectedRoute>
         <div className="flex">
           <Sidebar />
-          <div className="flex-1 md:ml-64">
+          <div className="">
             <div className="p-6">
               <div className="flex items-center justify-center min-h-[400px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -105,8 +112,8 @@ export default function Dashboard() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 md:ml-64">
-          <div className="p-6 space-y-6">
+        <div className="">
+          <div className="p-6">
             {/* Header */}
             <div>
               <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -142,12 +149,14 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <Label htmlFor="category">Kategori</Label>
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    {/* value harus undefined untuk placeholder, jangan "" */}
+                    <Select value={selectedCategory ?? undefined} onValueChange={onCategoryChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Semua kategori" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Semua kategori</SelectItem>
+                        {/* Jangan pernah value="" */}
+                        <SelectItem value="ALL">Semua kategori</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
                             {category}
@@ -220,7 +229,7 @@ export default function Dashboard() {
 
             {/* Charts */}
             {chartData && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 <Card>
                   <CardHeader>
                     <CardTitle>Saldo Per Bulan</CardTitle>

@@ -1,79 +1,106 @@
-import { Role, Permission, Resource } from '@/types';
+// lib/rbac.ts — NON-JSX (aman di .ts)
+import React, { ComponentType } from "react"
+import { Role, Permission, Resource } from "@/types"
 
-// Role-based permissions matrix
+// =====================
+// PERMISSIONS MATRIX
+// =====================
 const PERMISSIONS: Record<Role, Record<Resource, Permission[]>> = {
   BENDAHARA: {
-    TRANSACTION: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
-    MEMBER: ['READ'],
-    CHART: ['READ'],
-    EXPORT: ['CREATE', 'READ']
+    TRANSACTION: ["CREATE", "READ", "UPDATE", "DELETE"],
+    MEMBER: ["READ"],
+    CHART: ["READ"],
+    EXPORT: ["CREATE", "READ"],
   },
   SEKRETARIS: {
-    TRANSACTION: ['READ'], 
-    MEMBER: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
-    CHART: ['READ'],
-    EXPORT: ['READ']
+    TRANSACTION: ["READ"],
+    MEMBER: ["CREATE", "READ", "UPDATE", "DELETE"],
+    CHART: ["READ"],
+    EXPORT: ["READ"],
   },
   ANGGOTA: {
-    TRANSACTION: ['READ'],
-    MEMBER: ['READ'], 
-    CHART: ['READ'],
-    EXPORT: []
-  }
-};
+    TRANSACTION: ["READ"],
+    MEMBER: ["READ"],
+    CHART: ["READ"],
+    EXPORT: [],
+  },
+}
 
+// =====================
+// CORE CHECKER
+// =====================
 export const can = (role: Role, permission: Permission, resource: Resource): boolean => {
-  const rolePermissions = PERMISSIONS[role];
-  if (!rolePermissions) return false;
-  
-  const resourcePermissions = rolePermissions[resource];
-  return resourcePermissions?.includes(permission) || false;
-};
+  const rolePermissions = PERMISSIONS[role]
+  if (!rolePermissions) return false
+  const resourcePermissions = rolePermissions[resource]
+  return Array.isArray(resourcePermissions) ? resourcePermissions.includes(permission) : false
+}
 
-// Helper functions for common checks
-export const canCreateTransaction = (role: Role): boolean => 
-  can(role, 'CREATE', 'TRANSACTION');
+// =====================
+// HELPERS
+// =====================
+export const canCreateTransaction = (role: Role): boolean => can(role, "CREATE", "TRANSACTION")
 
-export const canEditTransaction = (role: Role): boolean => 
-  can(role, 'UPDATE', 'TRANSACTION') && can(role, 'DELETE', 'TRANSACTION');
+// EDIT biasanya butuh UPDATE; DELETE itu aksi terpisah. Kalau lu memang mau keduanya, biarkan.
+export const canEditTransaction = (role: Role): boolean =>
+  can(role, "UPDATE", "TRANSACTION") && can(role, "DELETE", "TRANSACTION")
 
-export const canCreateMember = (role: Role): boolean => 
-  can(role, 'CREATE', 'MEMBER');
+export const canCreateMember = (role: Role): boolean => can(role, "CREATE", "MEMBER")
 
-export const canEditMember = (role: Role): boolean => 
-  can(role, 'UPDATE', 'MEMBER') && can(role, 'DELETE', 'MEMBER');
+export const canEditMember = (role: Role): boolean =>
+  can(role, "UPDATE", "MEMBER") && can(role, "DELETE", "MEMBER")
 
-export const canExportData = (role: Role): boolean => 
-  can(role, 'CREATE', 'EXPORT');
+export const canExportData = (role: Role): boolean => can(role, "CREATE", "EXPORT")
 
-// Higher-order component for route protection
-export const withAuth = (allowedRoles: Role[]) => {
-  return (WrappedComponent: React.ComponentType<any>) => {
-    return function AuthenticatedComponent(props: any) {
-      // This would be used with the session store
-      // Implementation will be in the actual components
-      return <WrappedComponent {...props} />;
-    };
-  };
-};
+// =====================
+// SESSION ROLE (mock)
+// =====================
+// Ubah ini sesuai store lu (Zustand/Context). Untuk demo: ambil dari localStorage: { user: { role } }
+function getCurrentRole(): Role | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = localStorage.getItem("session")
+    if (!raw) return null
+    const obj = JSON.parse(raw)
+    return obj?.user?.role ?? null
+  } catch {
+    return null
+  }
+}
 
-// Navigation items based on role
-export const getNavigationItems = (role: Role) => {
-  const baseItems = [
-    { href: '/', label: 'Dashboard', icon: 'BarChart3' },
-  ];
-  
-  const roleItems = [];
-  
-  // All roles can view financial data (read-only for non-bendahara)
-  roleItems.push({ href: '/keuangan', label: 'Keuangan', icon: 'DollarSign' });
-  
-  // All roles can view members (read-only for non-sekretaris)  
-  roleItems.push({ href: '/anggota', label: 'Anggota', icon: 'Users' });
-  
-  const endItems = [
-    { href: '/profile', label: 'Profile', icon: 'User' }
-  ];
-  
-  return [...baseItems, ...roleItems, ...endItems];
-};
+// =====================
+// ROUTE GUARD (HOC) — NO JSX
+// =====================
+export function withAuth<P>(allowedRoles: Role[]) {
+  return function (WrappedComponent: ComponentType<P>) {
+    const AuthenticatedComponent: React.FC<P> = (props: P) => {
+      const role = getCurrentRole()
+      if (!role || !allowedRoles.includes(role)) {
+        // return null / fragment kosong / atau render komponen NotAuthorized versi lu
+        return React.createElement(React.Fragment, null)
+      }
+      return React.createElement(WrappedComponent, { ...props })
+    }
+    AuthenticatedComponent.displayName = `WithAuth(${(WrappedComponent as any).displayName || WrappedComponent.name || "Component"})`
+    return AuthenticatedComponent
+  }
+}
+
+// =====================
+// NAV ITEMS
+// =====================
+type NavItem = { href: string; label: string; icon: string }
+
+export const getNavigationItems = (role: Role): NavItem[] => {
+  const baseItems: NavItem[] = [{ href: "/", label: "Dashboard", icon: "BarChart3" }]
+
+  // Semua role boleh lihat Keuangan (read-only utk non-BENDAHARA)
+  const roleItems: NavItem[] = [
+    { href: "/keuangan", label: "Keuangan", icon: "DollarSign" },
+    { href: "/anggota", label: "Anggota", icon: "Users" }, // CRUD hanya Sekretaris
+  ]
+
+  const endItems: NavItem[] = [{ href: "/profile", label: "Profile", icon: "User" }]
+
+  return [...baseItems, ...roleItems, ...endItems]
+}

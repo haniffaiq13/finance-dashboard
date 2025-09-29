@@ -55,7 +55,7 @@ export function Sidebar() {
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="border-b p-6">
+          <div className="border-b p-2">
             <div className="flex items-center space-x-3">
               <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center">
                 <BarChart3 className="h-5 w-5 text-primary-foreground" />

@@ -92,8 +92,8 @@ export default function ProfilePage() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 md:ml-64">
-          <div className="p-6 space-y-6">
+        <div className="">
+          <div className="p-6">
             {/* Header */}
             <div>
               <h1 className="text-3xl font-bold">Profile</h1>
@@ -106,7 +106,7 @@ export default function ProfilePage() {
               {/* User Information */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-6">
                     <User className="h-5 w-5" />
                     Informasi Akun
                   </CardTitle>
@@ -161,7 +161,7 @@ export default function ProfilePage() {
               {/* Change Password */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-6">
                     <Lock className="h-5 w-5" />
                     Ubah Password
                   </CardTitle>

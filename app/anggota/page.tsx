@@ -93,10 +93,10 @@ export default function AnggotaPage() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 md:ml-64">
-          <div className="p-6 space-y-6">
+        <div className="">
+          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-3 gap-x-6 flex-wrap">
               <div>
                 <h1 className="text-3xl font-bold">Anggota</h1>
                 <p className="text-muted-foreground">
