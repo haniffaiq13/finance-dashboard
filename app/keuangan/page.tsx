@@ -160,8 +160,8 @@ export default function KeuanganPage() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="">
-          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+          <div className="">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-3 gap-x-6 flex-wrap">
               <div>

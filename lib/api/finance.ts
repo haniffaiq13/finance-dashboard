@@ -4,17 +4,17 @@ import transactionsData from '@/data/transactions.json';
 // In-memory store for demo - in production this would be replaced with API calls
 let transactionStore: Transaction[] = [...transactionsData] as Transaction[];
 
-// Load from localStorage on initialization
-if (typeof window !== 'undefined') {
-  const stored = localStorage.getItem('transactions');
-  if (stored) {
-    try {
-      transactionStore = JSON.parse(stored);
-    } catch (e) {
-      console.error('Failed to parse stored transactions:', e);
-    }
-  }
-}
+// // Load from localStorage on initialization
+// if (typeof window !== 'undefined') {
+//   const stored = localStorage.getItem('transactions');
+//   if (stored) {
+//     try {
+//       transactionStore = JSON.parse(stored);
+//     } catch (e) {
+//       console.error('Failed to parse stored transactions:', e);
+//     }
+//   }
+// }
 
 // Save to localStorage helper
 const saveToStorage = () => {

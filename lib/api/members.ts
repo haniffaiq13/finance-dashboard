@@ -4,17 +4,17 @@ import membersData from '@/data/members.json';
 // In-memory store for demo - in production this would be replaced with API calls
 let memberStore: Member[] = [...membersData] as Member[];
 
-// Load from localStorage on initialization
-if (typeof window !== 'undefined') {
-  const stored = localStorage.getItem('members');
-  if (stored) {
-    try {
-      memberStore = JSON.parse(stored);
-    } catch (e) {
-      console.error('Failed to parse stored members:', e);
-    }
-  }
-}
+// // Load from localStorage on initialization
+// if (typeof window !== 'undefined') {
+//   const stored = localStorage.getItem('members');
+//   if (stored) {
+//     try {
+//       memberStore = JSON.parse(stored);
+//     } catch (e) {
+//       console.error('Failed to parse stored members:', e);
+//     }
+//   }
+// }
 
 // Save to localStorage helper
 const saveToStorage = () => {

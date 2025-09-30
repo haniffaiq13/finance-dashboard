@@ -186,7 +186,7 @@ export const authService = {
 // Demo credentials (email & password)
 // -----------------------------
 export const DEMO_CREDENTIALS = [
-  { email: "bendahara@internal.id", password: "password123", role: "BENDAHARA" },
-  { email: "sekretaris@internal.id", password: "password123", role: "SEKRETARIS" },
-  { email: "anggota1@internal.id",  password: "password123", role: "ANGGOTA"   },
+  { email: "bendahara", password: "password123", role: "BENDAHARA" },
+  { email: "sekretaris", password: "password123", role: "SEKRETARIS" },
+  { email: "anggota1",  password: "password123", role: "ANGGOTA"   },
 ] as const

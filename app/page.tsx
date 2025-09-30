@@ -124,8 +124,8 @@ export default function Dashboard() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 overflow-auto">
-          <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+          <div className="">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>

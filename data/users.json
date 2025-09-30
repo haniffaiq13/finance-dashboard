@@ -2,7 +2,7 @@
   {
     "id": "user-1",
     "name": "Ahmad Bendahara",
-    "email": "bendahara@internal.id",
+    "email": "bendahara",
     "role": "BENDAHARA",
     "passwordHash": "h0:$2a$10$hash_11_pas",
     "createdAt": "2024-01-15T08:00:00Z"
@@ -10,7 +10,7 @@
   {
     "id": "user-2",
     "name": "Siti Sekretaris",
-    "email": "sekretaris@internal.id",
+    "email": "sekretaris",
     "role": "SEKRETARIS",
     "passwordHash": "h0:$2a$10$hash_11_pas",
     "createdAt": "2024-01-16T08:00:00Z"
@@ -18,7 +18,7 @@
   {
     "id": "user-3",
     "name": "Budi Anggota",
-    "email": "anggota1@internal.id",
+    "email": "anggota1",
     "role": "ANGGOTA",
     "passwordHash": "h0:$2a$10$hash_11_pas",
     "createdAt": "2024-01-17T08:00:00Z"
@@ -26,7 +26,7 @@
   {
     "id": "user-4",
     "name": "Rina Anggota",
-    "email": "anggota2@internal.id",
+    "email": "anggota2",
     "role": "ANGGOTA",
     "passwordHash": "h0:$2a$10$hash_11_pas",
     "createdAt": "2024-01-18T08:00:00Z"
@@ -34,7 +34,7 @@
   {
     "id": "user-5",
     "name": "Doni Anggota",
-    "email": "anggota3@internal.id",
+    "email": "anggota3",
     "role": "ANGGOTA",
     "passwordHash": "h0:$2a$10$hash_11_pas",
     "createdAt": "2024-01-19T08:00:00Z"

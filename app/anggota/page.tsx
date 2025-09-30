@@ -17,15 +17,15 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function AnggotaPage() {
   const { user } = useSession();
-  const { 
-    members, 
-    isLoading, 
-    fetchMembers, 
-    createMember, 
-    updateMember, 
-    deleteMember 
+  const {
+    members,
+    isLoading,
+    fetchMembers,
+    createMember,
+    updateMember,
+    deleteMember
   } = useMembers();
-  
+
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | undefined>();
@@ -48,7 +48,7 @@ export default function AnggotaPage() {
 
   const handleUpdateMember = async (data: Omit<Member, 'id' | 'joinedAt'>) => {
     if (!editingMember) return;
-    
+
     try {
       await updateMember(editingMember.id, data);
       setEditingMember(undefined);
@@ -60,7 +60,7 @@ export default function AnggotaPage() {
 
   const handleDeleteMember = async () => {
     if (!deleteId) return;
-    
+
     try {
       await deleteMember(deleteId);
       setDeleteId(null);
@@ -93,8 +93,8 @@ export default function AnggotaPage() {
     <ProtectedRoute>
       <div className="flex">
         <Sidebar />
-        <div className="">
-          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+          <div className="">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-3 gap-x-6 flex-wrap">
               <div>
@@ -181,7 +181,7 @@ export default function AnggotaPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Hapus Anggota</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Apakah Anda yakin ingin menghapus data anggota ini? 
+                    Apakah Anda yakin ingin menghapus data anggota ini?
                     Tindakan ini tidak dapat dibatalkan.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
