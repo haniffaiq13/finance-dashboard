@@ -4,17 +4,19 @@ import membersData from '@/data/members.json';
 // In-memory store for demo - in production this would be replaced with API calls
 let memberStore: Member[] = [...membersData] as Member[];
 
-// // Load from localStorage on initialization
-// if (typeof window !== 'undefined') {
-//   const stored = localStorage.getItem('members');
-//   if (stored) {
-//     try {
-//       memberStore = JSON.parse(stored);
-//     } catch (e) {
-//       console.error('Failed to parse stored members:', e);
-//     }
-//   }
-// }
+// Load from localStorage on initialization (client-side only)
+if (typeof window !== 'undefined') {
+  const stored = localStorage.getItem('members');
+  if (stored) {
+    try {
+      memberStore = JSON.parse(stored);
+    } catch (e) {
+      console.error('Failed to parse stored members:', e);
+      // Fallback to default data if localStorage is corrupted
+      memberStore = [...membersData] as Member[];
+    }
+  }
+}
 
 // Save to localStorage helper
 const saveToStorage = () => {
@@ -27,7 +29,7 @@ export const membersAPI = {
   // Get all members
   list: async (): Promise<Member[]> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 400));
     
     return [...memberStore].sort((a, b) => 
       new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime()
@@ -53,7 +55,7 @@ export const membersAPI = {
 
   // Create new member
   create: async (data: Omit<Member, 'id' | 'joinedAt'>): Promise<Member> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
     // Check if email already exists
     if (memberStore.find(m => m.email === data.email)) {
@@ -82,7 +84,7 @@ export const membersAPI = {
 
   // Update existing member
   update: async (id: string, data: Partial<Member>): Promise<Member> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
     const index = memberStore.findIndex(m => m.id === id);
     if (index === -1) {
@@ -117,7 +119,7 @@ export const membersAPI = {
 
   // Delete member
   delete: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const index = memberStore.findIndex(m => m.id === id);
     if (index === -1) {
@@ -137,7 +139,7 @@ export const membersAPI = {
 
   // Get member statistics
   getStats: async () => {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 300));
     
     const total = memberStore.length;
     const active = memberStore.filter(m => m.status === 'AKTIF').length;

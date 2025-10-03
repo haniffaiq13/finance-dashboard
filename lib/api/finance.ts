@@ -4,17 +4,19 @@ import transactionsData from '@/data/transactions.json';
 // In-memory store for demo - in production this would be replaced with API calls
 let transactionStore: Transaction[] = [...transactionsData] as Transaction[];
 
-// // Load from localStorage on initialization
-// if (typeof window !== 'undefined') {
-//   const stored = localStorage.getItem('transactions');
-//   if (stored) {
-//     try {
-//       transactionStore = JSON.parse(stored);
-//     } catch (e) {
-//       console.error('Failed to parse stored transactions:', e);
-//     }
-//   }
-// }
+// Load from localStorage on initialization (client-side only)
+if (typeof window !== 'undefined') {
+  const stored = localStorage.getItem('transactions');
+  if (stored) {
+    try {
+      transactionStore = JSON.parse(stored);
+    } catch (e) {
+      console.error('Failed to parse stored transactions:', e);
+      // Fallback to default data if localStorage is corrupted
+      transactionStore = [...transactionsData] as Transaction[];
+    }
+  }
+}
 
 // Save to localStorage helper
 const saveToStorage = () => {
@@ -27,7 +29,7 @@ export const financeAPI = {
   // Get all transactions with optional filtering
   list: async (filters?: TransactionFilters): Promise<Transaction[]> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 300));
     
     let filtered = [...transactionStore];
     
@@ -82,7 +84,7 @@ export const financeAPI = {
 
   // Create new transaction
   create: async (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Transaction> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
     const transaction: Transaction = {
       ...data,
@@ -106,7 +108,7 @@ export const financeAPI = {
 
   // Update existing transaction
   update: async (id: string, data: Partial<Transaction>): Promise<Transaction> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
     const index = transactionStore.findIndex(t => t.id === id);
     if (index === -1) {
@@ -135,7 +137,7 @@ export const financeAPI = {
 
   // Delete transaction
   delete: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const index = transactionStore.findIndex(t => t.id === id);
     if (index === -1) {
@@ -163,7 +165,7 @@ export const financeAPI = {
 
   // Get available categories
   getCategories: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 200));
     
     const categories = Array.from(new Set(transactionStore.map(t => t.category)));
     return categories.sort();
@@ -176,7 +178,7 @@ export const financeAPI = {
 
   // Get financial summary
   getSummary: async (dateFrom?: string, dateTo?: string) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 400));
     
     let filtered = transactionStore;
     
@@ -219,7 +221,7 @@ export const financeAPI = {
 
   // Get chart data
   getChartData: async (dateFrom?: string, dateTo?: string) => {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     let filtered = transactionStore;
     
