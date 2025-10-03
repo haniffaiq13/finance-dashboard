@@ -138,16 +138,11 @@ export const migrateToApi = async (): Promise<void> => {
     // Get all local data
     const transactions = loadPersistedData('transactions', []);
     const members = loadPersistedData('members', []);
-    
+
     // TODO: Send data to API endpoints
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
     // POST /api/migrate/transactions with transactions data
     // POST /api/migrate/members with members data
-    
+
     console.log('Migration completed successfully');
   } catch (error) {
     console.error('Migration failed:', error);
