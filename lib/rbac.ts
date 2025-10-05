@@ -6,19 +6,25 @@ import { Role, Permission, Resource } from "@/types"
 // PERMISSIONS MATRIX
 // =====================
 const PERMISSIONS: Record<Role, Record<Resource, Permission[]>> = {
-  BENDAHARA: {
+  admin: {
+    TRANSACTION: ["CREATE", "READ", "UPDATE", "DELETE"],
+    MEMBER: ["CREATE", "READ", "UPDATE", "DELETE"],
+    CHART: ["CREATE", "READ", "UPDATE", "DELETE"],
+    EXPORT: ["CREATE", "READ", "UPDATE", "DELETE"],
+  },
+  finance: {
     TRANSACTION: ["CREATE", "READ", "UPDATE", "DELETE"],
     MEMBER: ["READ"],
     CHART: ["READ"],
     EXPORT: ["CREATE", "READ"],
   },
-  SEKRETARIS: {
+  writer: {
     TRANSACTION: ["READ"],
     MEMBER: ["CREATE", "READ", "UPDATE", "DELETE"],
     CHART: ["READ"],
     EXPORT: ["READ"],
   },
-  ANGGOTA: {
+  user: {
     TRANSACTION: ["READ"],
     MEMBER: ["READ"],
     CHART: ["READ"],

@@ -103,8 +103,10 @@ export default function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* User Information */}
-              <Card>
+              <p className="text-muted-foreground">
+               Masih Dalam Pengembanngan
+              </p>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-6">
                     <User className="h-5 w-5" />
@@ -158,7 +160,6 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* Change Password */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-6">
@@ -279,14 +280,13 @@ export default function ProfilePage() {
                     </Button>
                   </form>
 
-                  {/* Demo Note */}
                   <div className="mt-4 p-3 bg-muted rounded-md">
                     <p className="text-sm text-muted-foreground">
                       <strong>Demo:</strong> Gunakan "password123" sebagai password saat ini untuk testing.
                     </p>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>

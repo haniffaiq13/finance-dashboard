@@ -123,9 +123,7 @@ export default function RegisterPage() {
                     <SelectValue placeholder="Pilih peran" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="BENDAHARA">Bendahara</SelectItem>
-                    <SelectItem value="SEKRETARIS">Sekretaris</SelectItem>
-                    <SelectItem value="ANGGOTA">Anggota</SelectItem>
+                    <SelectItem value="user">Anggota</SelectItem>
                   </SelectContent>
                 </Select>
                 {form.formState.errors.role && (

@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "id": "trans-1",
+        "date": "2024-01-15T10:00:00Z",
+        "description": "Gaji Karyawan Januari",
+        "category": "Gaji",
+        "type": "KELUAR",
+        "amount": 25000000,
+        "attachments": [],
+        "createdBy": "user-1",
+        "createdAt": "2024-01-15T10:00:00Z"
+    }
+]

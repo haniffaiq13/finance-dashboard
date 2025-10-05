@@ -1,295 +1,205 @@
-import { Transaction, TransactionFilters, TransType, Attachment } from '@/types';
-import transactionsData from '@/data/transactions.json';
+// /lib/financeAPI.ts
+// Client nyata ke Go CRUD Starter - Transactions (SELALU pakai Bearer)
 
-// In-memory store for demo - in production this would be replaced with API calls
-let transactionStore: Transaction[] = [...transactionsData] as Transaction[];
+import { Transaction, TransactionFilters } from '@/types';
+import { authAPI } from '@/lib/api/auth';
 
-// Load from localStorage on initialization (client-side only)
-if (typeof window !== 'undefined') {
-  const stored = localStorage.getItem('transactions');
-  if (stored) {
-    try {
-      transactionStore = JSON.parse(stored);
-    } catch (e) {
-      console.error('Failed to parse stored transactions:', e);
-      // Fallback to default data if localStorage is corrupted
-      transactionStore = [...transactionsData] as Transaction[];
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://haniffaiq.com:8080';
+const DEFAULT_LIMIT = 100;
+
+type ListResponse<T> = { items: T[]; limit: number; offset: number };
+
+type ListParams = {
+  limit?: number;
+  offset?: number;
+} & Partial<TransactionFilters>;
+
+type ApiTransaction = {
+  id: string;
+  date: string;
+  description: string;
+  category: string;
+  type: 'MASUK' | 'KELUAR';
+  amount: number;
+  attachments: Array<{ name: string; url: string }>;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+// ===== auth helpers (WAJIB token) =====
+function ensureToken(): string {
+  const token = authAPI.getToken?.();
+  if (!token) {
+    // konsekuen: FE lo harus trigger login flow ketika kena ini
+    throw new Error('Unauthorized: token tidak ditemukan. Silakan login dulu.');
+  }
+  return token;
+}
+
+function withAuthHeaders(init?: RequestInit): RequestInit {
+  const token = ensureToken();
+  return {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(init?.headers ?? {}),
+    },
+  };
+}
+
+// ============ util fetch kecil, dengan timeout, error surfacing ============
+async function apiRequest<T>(path: string, init?: RequestInit, timeoutMs = 10_000): Promise<T> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      ...withAuthHeaders(init), // <— SELALU inject Bearer
+      signal: controller.signal,
+    });
+
+    // Tangani 401 tegas
+    if (res.status === 401) {
+      const body = await res.text().catch(() => '');
+      // optional: authAPI.logout(); // kalau mau auto-kick
+      throw new Error(`Unauthorized (401). ${body}`);
     }
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${res.statusText} — ${text}`);
+    }
+
+    if (res.status === 204) return undefined as unknown as T;
+
+    return (await res.json()) as T;
+  } finally {
+    clearTimeout(id);
   }
 }
 
-// Save to localStorage helper
-const saveToStorage = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('transactions', JSON.stringify(transactionStore));
+// ============ helpers ============
+function toQuery(params: Record<string, string | number | undefined>) {
+  const q = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && `${v}` !== '') q.set(k, String(v));
+  });
+  return q.toString() ? `?${q.toString()}` : '';
+}
+
+function applyClientFilters(list: ApiTransaction[], filters?: TransactionFilters): ApiTransaction[] {
+  if (!filters) return list;
+  let arr = [...list];
+
+  if (filters.dateFrom) {
+    const from = new Date(filters.dateFrom).getTime();
+    arr = arr.filter(t => new Date(t.date).getTime() >= from);
   }
-};
+  if (filters.dateTo) {
+    const to = new Date(filters.dateTo).getTime();
+    arr = arr.filter(t => new Date(t.date).getTime() <= to);
+  }
+  if (filters.category) {
+    arr = arr.filter(t => t.category === filters.category);
+  }
+  if (filters.type) {
+    arr = arr.filter(t => t.type === filters.type);
+  }
+  if (filters.search) {
+    const s = filters.search.toLowerCase();
+    arr = arr.filter(
+      t =>
+        t.description.toLowerCase().includes(s) ||
+        t.category.toLowerCase().includes(s)
+    );
+  }
+  return arr;
+}
 
+// ============ API ============
 export const financeAPI = {
-  // Get all transactions with optional filtering
-  list: async (filters?: TransactionFilters): Promise<Transaction[]> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    let filtered = [...transactionStore];
-    
-    if (filters) {
-      if (filters.dateFrom) {
-        filtered = filtered.filter(t => t.date >= filters.dateFrom!);
-      }
-      if (filters.dateTo) {
-        filtered = filtered.filter(t => t.date <= filters.dateTo!);
-      }
-      if (filters.category) {
-        filtered = filtered.filter(t => t.category === filters.category);
-      }
-      if (filters.type) {
-        filtered = filtered.filter(t => t.type === filters.type);
-      }
-      if (filters.search) {
-        const search = filters.search.toLowerCase();
-        filtered = filtered.filter(t => 
-          t.description.toLowerCase().includes(search) ||
-          t.category.toLowerCase().includes(search)
-        );
-      }
-    }
-    
+  async list(params?: ListParams): Promise<ApiTransaction[]> {
+    const qp = toQuery({
+      limit: params?.limit ?? DEFAULT_LIMIT,
+      offset: params?.offset ?? 0,
+      dateFrom: params?.dateFrom,
+      dateTo: params?.dateTo,
+      category: params?.category,
+      type: params?.type,
+      search: params?.search,
+    });
+
+    const resp = await apiRequest<ListResponse<ApiTransaction>>(`/v1/transactions${qp}`);
+    const items = Array.isArray(resp?.items) ? resp.items : [];
+    const filtered = applyClientFilters(items, params);
     return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    
-    // TODO: Replace with real API call
-    /*
-    const params = new URLSearchParams();
-    if (filters?.dateFrom) params.append('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) params.append('dateTo', filters.dateTo);
-    if (filters?.category) params.append('category', filters.category);
-    if (filters?.type) params.append('type', filters.type);
-    if (filters?.search) params.append('search', filters.search);
-    
-    return apiRequest<Transaction[]>(`/transactions?${params.toString()}`);
-    */
   },
 
-  // Get single transaction by ID
-  getById: async (id: string): Promise<Transaction | null> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    return transactionStore.find(t => t.id === id) || null;
-    
-    // TODO: Replace with real API call
-    /*
-    return apiRequest<Transaction>(`/transactions/${id}`);
-    */
+  async getById(id: string): Promise<ApiTransaction | null> {
+    const data = await apiRequest<ApiTransaction>(`/v1/transactions/${id}`);
+    return data ?? null;
   },
 
-  // Create new transaction
-  create: async (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Transaction> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const transaction: Transaction = {
-      ...data,
-      id: `trans-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      createdAt: new Date().toISOString(),
-    };
-    
-    transactionStore.unshift(transaction);
-    saveToStorage();
-    
-    return transaction;
-    
-    // TODO: Replace with real API call
-    /*
-    return apiRequest<Transaction>('/transactions', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    */
+  async create(input: Omit<ApiTransaction, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiTransaction> {
+    const body = JSON.stringify(input);
+    return apiRequest<ApiTransaction>('/v1/transactions', { method: 'POST', body });
   },
 
-  // Update existing transaction
-  update: async (id: string, data: Partial<Transaction>): Promise<Transaction> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const index = transactionStore.findIndex(t => t.id === id);
-    if (index === -1) {
-      throw new Error('Transaction not found');
-    }
-    
-    const updated = {
-      ...transactionStore[index],
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
-    
-    transactionStore[index] = updated;
-    saveToStorage();
-    
-    return updated;
-    
-    // TODO: Replace with real API call
-    /*
-    return apiRequest<Transaction>(`/transactions/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-    */
+  async update(id: string, patch: Partial<ApiTransaction>): Promise<ApiTransaction> {
+    const body = JSON.stringify(patch);
+    return apiRequest<ApiTransaction>(`/v1/transactions/${id}`, { method: 'PUT', body });
   },
 
-  // Delete transaction
-  delete: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const index = transactionStore.findIndex(t => t.id === id);
-    if (index === -1) {
-      throw new Error('Transaction not found');
-    }
-    
-    // Clean up attachment object URLs to prevent memory leaks
-    const transaction = transactionStore[index];
-    transaction.attachments.forEach(att => {
-      if (att.url.startsWith('blob:')) {
-        URL.revokeObjectURL(att.url);
-      }
-    });
-    
-    transactionStore.splice(index, 1);
-    saveToStorage();
-    
-    // TODO: Replace with real API call
-    /*
-    await apiRequest(`/transactions/${id}`, {
-      method: 'DELETE',
-    });
-    */
+  async delete(id: string): Promise<void> {
+    await apiRequest<void>(`/v1/transactions/${id}`, { method: 'DELETE' });
   },
 
-  // Get available categories
-  getCategories: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const categories = Array.from(new Set(transactionStore.map(t => t.category)));
-    return categories.sort();
-    
-    // TODO: Replace with real API call
-    /*
-    return apiRequest<string[]>('/transactions/categories');
-    */
+  async getCategories(): Promise<string[]> {
+    const items = await this.list({ limit: DEFAULT_LIMIT, offset: 0 });
+    return Array.from(new Set(items.map(t => t.category))).sort();
   },
 
-  // Get financial summary
-  getSummary: async (dateFrom?: string, dateTo?: string) => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    
-    let filtered = transactionStore;
-    
-    if (dateFrom) {
-      filtered = filtered.filter(t => t.date >= dateFrom);
-    }
-    if (dateTo) {
-      filtered = filtered.filter(t => t.date <= dateTo);
-    }
-    
-    const totalIncome = filtered
-      .filter(t => t.type === 'MASUK')
-      .reduce((sum, t) => sum + t.amount, 0);
-      
-    const totalExpense = filtered
-      .filter(t => t.type === 'KELUAR')
-      .reduce((sum, t) => sum + t.amount, 0);
-    
+  async getSummary(dateFrom?: string, dateTo?: string) {
+    const items = await this.list({ dateFrom, dateTo, limit: DEFAULT_LIMIT, offset: 0 });
+    const totalIncome = items.filter(t => t.type === 'MASUK').reduce((s, t) => s + t.amount, 0);
+    const totalExpense = items.filter(t => t.type === 'KELUAR').reduce((s, t) => s + t.amount, 0);
     return {
       totalIncome,
       totalExpense,
       balance: totalIncome - totalExpense,
-      transactionCount: filtered.length,
+      transactionCount: items.length,
     };
-    
-    // TODO: Replace with real API call
-    /*
-    const params = new URLSearchParams();
-    if (dateFrom) params.append('dateFrom', dateFrom);
-    if (dateTo) params.append('dateTo', dateTo);
-    
-    return apiRequest<{
-      totalIncome: number;
-      totalExpense: number;
-      balance: number;
-      transactionCount: number;
-    }>(`/transactions/summary?${params.toString()}`);
-    */
   },
 
-  // Get chart data
-  getChartData: async (dateFrom?: string, dateTo?: string) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    let filtered = transactionStore;
-    
-    if (dateFrom) {
-      filtered = filtered.filter(t => t.date >= dateFrom);
+  async getChartData(dateFrom?: string, dateTo?: string) {
+    const items = await this.list({ dateFrom, dateTo, limit: DEFAULT_LIMIT, offset: 0 });
+
+    const monthly: Record<string, { income: number; expense: number }> = {};
+    for (const t of items) {
+      const key = new Date(t.date).toISOString().slice(0, 7);
+      if (!monthly[key]) monthly[key] = { income: 0, expense: 0 };
+      if (t.type === 'MASUK') monthly[key].income += t.amount;
+      else monthly[key].expense += t.amount;
     }
-    if (dateTo) {
-      filtered = filtered.filter(t => t.date <= dateTo);
-    }
-    
-    // Monthly balance data
-    const monthlyData: Record<string, { income: number; expense: number; balance: number }> = {};
-    
-    filtered.forEach(transaction => {
-      const monthKey = transaction.date.slice(0, 7); // YYYY-MM
-      
-      if (!monthlyData[monthKey]) {
-        monthlyData[monthKey] = { income: 0, expense: 0, balance: 0 };
-      }
-      
-      if (transaction.type === 'MASUK') {
-        monthlyData[monthKey].income += transaction.amount;
-      } else {
-        monthlyData[monthKey].expense += transaction.amount;
-      }
-    });
-    
-    // Calculate running balance
-    let runningBalance = 0;
-    const balanceData = Object.keys(monthlyData)
+
+    let running = 0;
+    const monthlyArr = Object.keys(monthly)
       .sort()
-      .map(month => {
-        const data = monthlyData[month];
-        runningBalance += data.income - data.expense;
-        return {
-          month,
-          income: data.income,
-          expense: data.expense,
-          balance: runningBalance,
-        };
+      .map(m => {
+        running += monthly[m].income - monthly[m].expense;
+        return { month: m, income: monthly[m].income, expense: monthly[m].expense, balance: running };
       });
-    
-    // Category breakdown (expenses only)
-    const categoryData: Record<string, number> = {};
-    filtered
-      .filter(t => t.type === 'KELUAR')
-      .forEach(transaction => {
-        categoryData[transaction.category] = (categoryData[transaction.category] || 0) + transaction.amount;
-      });
-    
+
+    const cat: Record<string, number> = {};
+    for (const t of items) {
+      if (t.type === 'KELUAR') cat[t.category] = (cat[t.category] ?? 0) + t.amount;
+    }
+
     return {
-      monthly: balanceData,
-      categories: Object.entries(categoryData).map(([category, amount]) => ({
-        category,
-        amount,
-      })),
+      monthly: monthlyArr,
+      categories: Object.entries(cat).map(([category, amount]) => ({ category, amount })),
     };
-    
-    // TODO: Replace with real API call
-    /*
-    const params = new URLSearchParams();
-    if (dateFrom) params.append('dateFrom', dateFrom);
-    if (dateTo) params.append('dateTo', dateTo);
-    
-    return apiRequest<{
-      monthly: Array<{ month: string; income: number; expense: number; balance: number }>;
-      categories: Array<{ category: string; amount: number }>;
-    }>(`/transactions/charts?${params.toString()}`);
-    */
   },
 };
