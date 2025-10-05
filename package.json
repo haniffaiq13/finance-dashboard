@@ -72,6 +72,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.13.4",
     "netlify-cli": "^23.9.1"
   }
 }
