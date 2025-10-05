@@ -1,6 +1,6 @@
 # Finance Dashboard - Internal Organization Management System
 
-Dashboard internal untuk mengelola keuangan dan anggota organisasi dengan sistem kontrol akses berbasis peran (RBAC).
+Dashboard internal untuk mengelola keuangan dan user organisasi dengan sistem kontrol akses berbasis peran (RBAC).
 
 ## 🚀 Fitur Utama
 
@@ -18,16 +18,16 @@ Dashboard internal untuk mengelola keuangan dan anggota organisasi dengan sistem
 - Export data ke CSV
 - Filter dan pencarian transaksi
 
-### 👥 Manajemen Anggota
-- CRUD data anggota organisasi
-- Status anggota (Aktif/Non-aktif)
-- Manajemen peran anggota
-- Statistik keanggotaan
+### 👥 Manajemen user
+- CRUD data user organisasi
+- Status user (Aktif/Non-aktif)
+- Manajemen peran user
+- Statistik keuseran
 
 ### 🔐 Sistem Autentikasi & Otorisasi
 - Login/Register dengan validasi
 - Role-Based Access Control (RBAC)
-- 3 tingkat akses: Bendahara, Sekretaris, Anggota
+- 3 tingkat akses: finance, writer, user
 - Session management dengan localStorage
 
 ## 🏗️ Arsitektur Sistem
@@ -44,7 +44,7 @@ Dashboard internal untuk mengelola keuangan dan anggota organisasi dengan sistem
 - **Mode**: JSON files + localStorage
 - **Files**: 
   - `data/users.json` - Data pengguna
-  - `data/members.json` - Data anggota
+  - `data/members.json` - Data user
   - `data/transactions.json` - Data transaksi
 - **Persistence**: localStorage untuk perubahan data
 
@@ -55,11 +55,11 @@ Dashboard internal untuk mengelola keuangan dan anggota organisasi dengan sistem
 
 ## 🎯 Role-Based Access Control
 
-| Fitur | Bendahara | Sekretaris | Anggota |
+| Fitur | finance | writer | user |
 |-------|-----------|------------|---------|
 | Dashboard | ✅ Read | ✅ Read | ✅ Read |
 | Transaksi | ✅ CRUD | ❌ Read Only | ❌ Read Only |
-| Anggota | ❌ Read Only | ✅ CRUD | ❌ Read Only |
+| user | ❌ Read Only | ✅ CRUD | ❌ Read Only |
 | Export Data | ✅ Yes | ❌ Read Only | ❌ No |
 | Charts | ✅ Read | ✅ Read | ✅ Read |
 
@@ -87,9 +87,9 @@ npm start
 
 | Role | Email | Password |
 |------|-------|----------|
-| Bendahara | bendahara | password123 |
-| Sekretaris | sekretaris | password123 |
-| Anggota | anggota1 | password123 |
+| finance | finance | password123 |
+| writer | writer | password123 |
+| user | user1 | password123 |
 
 ## 📁 Struktur Project
 
@@ -97,7 +97,7 @@ npm start
 ├── app/                    # Next.js App Router
 │   ├── (auth)/            # Auth pages
 │   ├── keuangan/          # Finance management
-│   ├── anggota/           # Member management
+│   ├── user/           # Member management
 │   └── profile/           # User profile
 ├── components/            # Reusable components
 │   ├── ui/               # shadcn/ui components

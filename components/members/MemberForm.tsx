@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 const memberSchema = z.object({
   name: z.string().min(1, 'Nama harus diisi'),
   email: z.string().email('Email tidak valid'),
-  role: z.enum(['BENDAHARA', 'SEKRETARIS', 'ANGGOTA']),
+  role: z.enum(['admin', 'user', 'finance', 'writer']),
   status: z.enum(['AKTIF', 'NONAKTIF']),
 });
 
@@ -41,7 +41,7 @@ export function MemberForm({
     defaultValues: {
       name: member?.name || '',
       email: member?.email || '',
-      role: member?.role || 'ANGGOTA',
+      role: member?.role || 'user',
       status: member?.status || 'AKTIF',
     },
   });
@@ -54,13 +54,13 @@ export function MemberForm({
       form.reset();
       
       toast({
-        title: member ? 'Anggota diperbarui' : 'Anggota ditambahkan',
-        description: 'Data anggota berhasil disimpan.',
+        title: member ? 'user diperbarui' : 'user ditambahkan',
+        description: 'Data user berhasil disimpan.',
       });
     } catch (error: any) {
       toast({
         title: 'Terjadi kesalahan',
-        description: error.message || 'Gagal menyimpan data anggota.',
+        description: error.message || 'Gagal menyimpan data user.',
         variant: 'destructive',
       });
     }
@@ -71,7 +71,7 @@ export function MemberForm({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {member ? 'Edit Anggota' : 'Tambah Anggota'}
+            {member ? 'Edit user' : 'Tambah user'}
           </DialogTitle>
         </DialogHeader>
 
@@ -118,9 +118,9 @@ export function MemberForm({
                 <SelectValue placeholder="Pilih peran" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="BENDAHARA">Bendahara</SelectItem>
-                <SelectItem value="SEKRETARIS">Sekretaris</SelectItem>
-                <SelectItem value="ANGGOTA">Anggota</SelectItem>
+                {/* <SelectItem value="finance">finance</SelectItem>
+                <SelectItem value="writer">writer</SelectItem> */}
+                <SelectItem value="user">user</SelectItem>
               </SelectContent>
             </Select>
             {form.formState.errors.role && (

@@ -1,4 +1,4 @@
-export type Role = 'BENDAHARA' | 'SEKRETARIS' | 'ANGGOTA';
+export type Role = 'admin' | 'finance' | 'writer' | 'user';
 
 export interface User {
   id: string;

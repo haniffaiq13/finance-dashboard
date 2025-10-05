@@ -66,7 +66,7 @@ export function MemberTable({
     return (
       <div className="text-center py-8 text-muted-foreground">
         <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-        <p>Belum ada anggota</p>
+        <p>Belum ada user</p>
       </div>
     );
   }
@@ -121,8 +121,8 @@ export function MemberTable({
               <TableCell>
                 <Badge 
                   variant={
-                    member.role === 'BENDAHARA' ? 'default' :
-                    member.role === 'SEKRETARIS' ? 'secondary' : 'outline'
+                    member.role === 'admin' ? 'default' :
+                    member.role === 'finance' ? 'secondary' : 'outline'
                   }
                 >
                   {member.role}

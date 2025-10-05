@@ -49,8 +49,8 @@ export function TransactionTable({
     const aValue = a[sortField];
     const bValue = b[sortField];
     
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    // if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    // if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
     return 0;
   });
 

@@ -77,20 +77,29 @@ function getCurrentRole(): Role | null {
 // =====================
 // ROUTE GUARD (HOC) — NO JSX
 // =====================
-export function withAuth<P>(allowedRoles: Role[]) {
-  return function (WrappedComponent: ComponentType<P>) {
-    const AuthenticatedComponent: React.FC<P> = (props: P) => {
+export function withAuth<P extends Record<string, any>>(allowedRoles: Role[]) {
+  return function withAuthWrapper(WrappedComponent: React.ComponentType<P>): React.ComponentType<P> {
+    const AuthenticatedComponent = (props: P): React.ReactElement | null => {
       const role = getCurrentRole()
       if (!role || !allowedRoles.includes(role)) {
-        // return null / fragment kosong / atau render komponen NotAuthorized versi lu
+        // return kosong
         return React.createElement(React.Fragment, null)
       }
-      return React.createElement(WrappedComponent, { ...props })
+
+      // === FIX UTAMA ===
+      // Gunakan 'any' di casting kedua untuk menghindari konflik tipe internal ReactElement overload
+      return React.createElement(WrappedComponent as React.ComponentType<any>, props)
     }
-    AuthenticatedComponent.displayName = `WithAuth(${(WrappedComponent as any).displayName || WrappedComponent.name || "Component"})`
-    return AuthenticatedComponent
+
+    AuthenticatedComponent.displayName = `WithAuth(${
+      (WrappedComponent as any).displayName || WrappedComponent.name || "Component"
+    })`
+
+    // balikin sebagai ComponentType<P> supaya aman dipakai di mana pun
+    return AuthenticatedComponent as React.ComponentType<P>
   }
 }
+
 
 // =====================
 // NAV ITEMS
@@ -100,10 +109,10 @@ type NavItem = { href: string; label: string; icon: string }
 export const getNavigationItems = (role: Role): NavItem[] => {
   const baseItems: NavItem[] = [{ href: "/", label: "Dashboard", icon: "BarChart3" }]
 
-  // Semua role boleh lihat Keuangan (read-only utk non-BENDAHARA)
+  // Semua role boleh lihat Keuangan (read-only utk non-finance)
   const roleItems: NavItem[] = [
     { href: "/keuangan", label: "Keuangan", icon: "DollarSign" },
-    { href: "/anggota", label: "Anggota", icon: "Users" }, // CRUD hanya Sekretaris
+    { href: "/user", label: "user", icon: "Users" }, // CRUD hanya writer
   ]
 
   const endItems: NavItem[] = [{ href: "/profile", label: "Profile", icon: "User" }]

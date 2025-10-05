@@ -21,7 +21,7 @@ const registerSchema = z.object({
   email: z.string().email('Email tidak valid'),
   password: z.string().min(6, 'Password minimal 6 karakter'),
   confirmPassword: z.string(),
-  role: z.enum(['BENDAHARA', 'SEKRETARIS', 'ANGGOTA']),
+  role: z.enum(['admin', 'user', 'finance', 'writer']),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Password tidak cocok",
   path: ["confirmPassword"],
@@ -44,7 +44,7 @@ export default function RegisterPage() {
       email: '',
       password: '',
       confirmPassword: '',
-      role: 'ANGGOTA',
+      role: 'user',
     },
   });
 
@@ -123,7 +123,7 @@ export default function RegisterPage() {
                     <SelectValue placeholder="Pilih peran" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="user">Anggota</SelectItem>
+                    <SelectItem value="user">user</SelectItem>
                   </SelectContent>
                 </Select>
                 {form.formState.errors.role && (

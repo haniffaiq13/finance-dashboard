@@ -15,7 +15,7 @@ import { Member } from '@/types';
 import { Plus, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-export default function AnggotaPage() {
+export default function userPage() {
   const { user } = useSession();
   const {
     members,
@@ -65,13 +65,13 @@ export default function AnggotaPage() {
       await deleteMember(deleteId);
       setDeleteId(null);
       toast({
-        title: 'Anggota dihapus',
-        description: 'Data anggota berhasil dihapus.',
+        title: 'user dihapus',
+        description: 'Data user berhasil dihapus.',
       });
     } catch (error) {
       toast({
         title: 'Terjadi kesalahan',
-        description: 'Gagal menghapus data anggota.',
+        description: 'Gagal menghapus data user.',
         variant: 'destructive',
       });
     }
@@ -98,15 +98,15 @@ export default function AnggotaPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-y-3 gap-x-6 flex-wrap">
               <div>
-                <h1 className="text-3xl font-bold">Anggota</h1>
+                <h1 className="text-3xl font-bold">user</h1>
                 <p className="text-muted-foreground">
-                  Kelola data anggota organisasi
+                  Kelola data user organisasi
                 </p>
               </div>
               {canCreate && (
                 <Button onClick={() => setIsFormOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Tambah Anggota
+                  Tambah user
                 </Button>
               )}
             </div>
@@ -115,7 +115,7 @@ export default function AnggotaPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Anggota</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total user</CardTitle>
                   <Users className="h-4 w-4 text-primary" />
                 </CardHeader>
                 <CardContent>
@@ -125,7 +125,7 @@ export default function AnggotaPage() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Anggota Aktif</CardTitle>
+                  <CardTitle className="text-sm font-medium">user Aktif</CardTitle>
                   <Users className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
@@ -135,7 +135,7 @@ export default function AnggotaPage() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Anggota Non-Aktif</CardTitle>
+                  <CardTitle className="text-sm font-medium">user Non-Aktif</CardTitle>
                   <Users className="h-4 w-4 text-red-600" />
                 </CardHeader>
                 <CardContent>
@@ -147,9 +147,9 @@ export default function AnggotaPage() {
             {/* Member Table */}
             <Card>
               <CardHeader>
-                <CardTitle>Daftar Anggota</CardTitle>
+                <CardTitle>Daftar user</CardTitle>
                 <CardDescription>
-                  Daftar semua anggota dalam organisasi
+                  Daftar semua user dalam organisasi
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -179,9 +179,9 @@ export default function AnggotaPage() {
             <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Hapus Anggota</AlertDialogTitle>
+                  <AlertDialogTitle>Hapus user</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Apakah Anda yakin ingin menghapus data anggota ini?
+                    Apakah Anda yakin ingin menghapus data user ini?
                     Tindakan ini tidak dapat dibatalkan.
                   </AlertDialogDescription>
                 </AlertDialogHeader>

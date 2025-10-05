@@ -30,7 +30,7 @@
 //   login: async (email: string, password: string) => {
 //     try {
 //       const result = await authAPI.login(email, password);
-      
+
 //       const session = { user: result.user, token: result.token, isAuthenticated: true };
 //       storeSession(result);
 //       set(session);
@@ -42,7 +42,7 @@
 //   register: async (name: string, email: string, password: string, role: User['role']) => {
 //     try {
 //       const result = await authAPI.register(name, email, password, role);
-      
+
 //       const session = { user: result.user, token: result.token, isAuthenticated: true };
 //       storeSession(result);
 //       set(session);
@@ -72,6 +72,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authAPI } from '@/lib/api/auth';
 import type { User } from '@/types';
+import { getStoredSession, storeSession } from '@/lib/auth';
+
 
 type SessionState = {
   // state
@@ -83,6 +85,7 @@ type SessionState = {
   // actions
   login: (email: string, password: string) => Promise<void>;
   setSession: (user: User | null, token: string | null) => void;
+  register: (name: string, email: string, password: string, role: User['role']) => Promise<void>;
   logout: () => void;
 };
 
@@ -123,6 +126,18 @@ export const useSession = create<SessionState>()(
           isAuthenticated: !!token,
           isLoading: false,
         });
+      },
+
+      register: async (name: string, email: string, password: string, role: User['role']) => {
+        try {
+          const result = await authAPI.register(name, email, password, role);
+
+          const session = { user: result.user, token: result.token, isAuthenticated: true };
+          storeSession(result);
+          set(session);
+        } catch (error) {
+          throw error;
+        }
       },
 
       // Logout total

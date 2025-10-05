@@ -19,7 +19,7 @@
     "id": "member-3",
     "name": "Hanif Faiq, S.T",
     "email": "hanif",
-    "role": "SEKRETARIS",
+    "role": "writer",
     "status": "AKTIF",
     "joinedAt": "2024-01-18T00:00:00Z"
   },
@@ -27,7 +27,7 @@
     "id": "member-4",
     "name": "Elsa Nuraini Ramadhanti",
     "email": "elsa",
-    "role": "WAKIL_SEKRETARIS",
+    "role": "WAKIL_writer",
     "status": "AKTIF",
     "joinedAt": "2024-01-19T00:00:00Z"
   },
@@ -35,7 +35,7 @@
     "id": "member-5",
     "name": "Sandi Firdaus",
     "email": "sandi",
-    "role": "BENDAHARA",
+    "role": "finance",
     "status": "AKTIF",
     "joinedAt": "2024-01-20T00:00:00Z"
   },
@@ -43,7 +43,7 @@
     "id": "member-6",
     "name": "Devi Pitri Yani",
     "email": "devi",
-    "role": "WAKIL_BENDAHARA",
+    "role": "WAKIL_finance",
     "status": "AKTIF",
     "joinedAt": "2024-01-21T00:00:00Z"
   },

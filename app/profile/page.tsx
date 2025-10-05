@@ -77,11 +77,11 @@ export default function ProfilePage() {
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
-      case 'BENDAHARA':
+      case 'finance':
         return 'default';
-      case 'SEKRETARIS':
+      case 'writer':
         return 'secondary';
-      case 'ANGGOTA':
+      case 'user':
         return 'outline';
       default:
         return 'outline';

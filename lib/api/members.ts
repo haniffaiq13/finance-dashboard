@@ -30,11 +30,11 @@ export const membersAPI = {
   list: async (): Promise<Member[]> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 400));
-    
-    return [...memberStore].sort((a, b) => 
+
+    return [...memberStore].sort((a, b) =>
       new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime()
     );
-    
+
     // TODO: Replace with real API call
     /*
     return apiRequest<Member[]>('/members');
@@ -44,9 +44,9 @@ export const membersAPI = {
   // Get single member by ID
   getById: async (id: string): Promise<Member | null> => {
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     return memberStore.find(m => m.id === id) || null;
-    
+
     // TODO: Replace with real API call
     /*
     return apiRequest<Member>(`/members/${id}`);
@@ -56,23 +56,23 @@ export const membersAPI = {
   // Create new member
   create: async (data: Omit<Member, 'id' | 'joinedAt'>): Promise<Member> => {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     // Check if email already exists
     if (memberStore.find(m => m.email === data.email)) {
       throw new Error('Email already exists');
     }
-    
+
     const member: Member = {
       ...data,
       id: `member-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
       joinedAt: new Date().toISOString(),
     };
-    
+
     memberStore.unshift(member);
     saveToStorage();
-    
+
     return member;
-    
+
     // TODO: Replace with real API call
     /*
     return apiRequest<Member>('/members', {
@@ -85,29 +85,29 @@ export const membersAPI = {
   // Update existing member
   update: async (id: string, data: Partial<Member>): Promise<Member> => {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const index = memberStore.findIndex(m => m.id === id);
     if (index === -1) {
       throw new Error('Member not found');
     }
-    
+
     // Check email uniqueness if email is being updated
     if (data.email && data.email !== memberStore[index].email) {
       if (memberStore.find(m => m.email === data.email && m.id !== id)) {
         throw new Error('Email already exists');
       }
     }
-    
+
     const updated = {
       ...memberStore[index],
       ...data,
     };
-    
+
     memberStore[index] = updated;
     saveToStorage();
-    
+
     return updated;
-    
+
     // TODO: Replace with real API call
     /*
     return apiRequest<Member>(`/members/${id}`, {
@@ -120,15 +120,15 @@ export const membersAPI = {
   // Delete member
   delete: async (id: string): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const index = memberStore.findIndex(m => m.id === id);
     if (index === -1) {
       throw new Error('Member not found');
     }
-    
+
     memberStore.splice(index, 1);
     saveToStorage();
-    
+
     // TODO: Replace with real API call
     /*
     await apiRequest(`/members/${id}`, {
@@ -140,24 +140,25 @@ export const membersAPI = {
   // Get member statistics
   getStats: async () => {
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     const total = memberStore.length;
     const active = memberStore.filter(m => m.status === 'AKTIF').length;
     const inactive = memberStore.filter(m => m.status === 'NONAKTIF').length;
-    
+
     const roleBreakdown: Record<Role, number> = {
-      BENDAHARA: memberStore.filter(m => m.role === 'BENDAHARA').length,
-      SEKRETARIS: memberStore.filter(m => m.role === 'SEKRETARIS').length,
-      ANGGOTA: memberStore.filter(m => m.role === 'ANGGOTA').length,
+      admin: memberStore.filter(m => m.role === 'admin').length,
+      finance: memberStore.filter(m => m.role === 'finance').length,
+      writer: memberStore.filter(m => m.role === 'writer').length,
+      user: memberStore.filter(m => m.role === 'user').length,
     };
-    
+
     return {
       total,
       active,
       inactive,
       roleBreakdown,
     };
-    
+
     // TODO: Replace with real API call
     /*
     return apiRequest<{

@@ -76,9 +76,9 @@ export const apiRequest = async <T>(
       throw error;
     }
     
-    if (error.name === 'AbortError') {
-      throw new ApiError(408, 'Request timeout');
-    }
+    // if (error.name === 'AbortError') {
+    //   throw new ApiError(408, 'Request timeout');
+    // }
     
     throw new ApiError(500, 'Network error');
   }
