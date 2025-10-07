@@ -4,7 +4,7 @@
 import { Transaction, TransactionFilters } from '@/types';
 import { authAPI } from '@/lib/api/auth';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://haniffaiq.com:8080';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://katar.haniffaiq.com';
 const DEFAULT_LIMIT = 100;
 
 type ListResponse<T> = { items: T[]; limit: number; offset: number };

@@ -1,7 +1,7 @@
 // /lib/api/auth.ts
 import { User } from '@/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://haniffaiq.com:8080';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://katar.haniffaiq.com';
 const TOKEN_KEY = 'auth.token';
 const USER_KEY = 'auth.user';
 
