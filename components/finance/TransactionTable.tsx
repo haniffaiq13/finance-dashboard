@@ -80,55 +80,56 @@ export function TransactionTable({
 
   return (
     <div className="border rounded-lg overflow-x-auto">
-      <Table>
+      <Table className="text-sm">
         <TableHeader>
           <TableRow>
             <TableHead
-              className="cursor-pointer hover:bg-muted whitespace-nowrap"
+              className="cursor-pointer hover:bg-muted whitespace-nowrap text-xs px-2"
               onClick={() => handleSort('date')}
             >
               Tanggal {sortField === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted whitespace-nowrap"
+              className="cursor-pointer hover:bg-muted whitespace-nowrap text-xs px-2"
               onClick={() => handleSort('description')}
             >
               Deskripsi {sortField === 'description' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted whitespace-nowrap"
+              className="cursor-pointer hover:bg-muted whitespace-nowrap text-xs px-2"
               onClick={() => handleSort('category')}
             >
               Kategori {sortField === 'category' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead className="whitespace-nowrap">Tipe</TableHead>
-            <TableHead className="text-right whitespace-nowrap">Jumlah</TableHead>
-            <TableHead className="whitespace-nowrap">Lampiran</TableHead>
-            {canEdit && <TableHead className="whitespace-nowrap">Aksi</TableHead>}
+            <TableHead className="whitespace-nowrap text-xs px-2">Tipe</TableHead>
+            <TableHead className="text-right whitespace-nowrap text-xs px-2">Jumlah</TableHead>
+            <TableHead className="whitespace-nowrap text-xs px-2">Lampiran</TableHead>
+            {canEdit && <TableHead className="whitespace-nowrap text-xs px-2">Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {sortedTransactions.map((transaction) => (
             <TableRow key={transaction.id}>
-              <TableCell className="font-mono whitespace-nowrap">
+              <TableCell className="font-mono whitespace-nowrap text-xs px-2 py-2">
                 {formatDate(transaction.date)}
               </TableCell>
-              <TableCell>
-                <div className="max-w-[200px] min-w-[150px] truncate">
+              <TableCell className="px-2 py-2">
+                <div className="max-w-[150px] min-w-[100px] truncate text-xs">
                   {transaction.description}
                 </div>
               </TableCell>
-              <TableCell className="whitespace-nowrap">
-                <Badge variant="outline">{transaction.category}</Badge>
+              <TableCell className="whitespace-nowrap px-2 py-2">
+                <Badge variant="outline" className="text-xs">{transaction.category}</Badge>
               </TableCell>
-              <TableCell className="whitespace-nowrap">
+              <TableCell className="whitespace-nowrap px-2 py-2">
                 <Badge
                   variant={transaction.type === 'MASUK' ? 'default' : 'destructive'}
+                  className="text-xs"
                 >
                   {transaction.type}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right font-mono whitespace-nowrap">
+              <TableCell className="text-right font-mono whitespace-nowrap text-xs px-2 py-2">
                 <span
                   className={
                     transaction.type === 'MASUK'
@@ -140,7 +141,7 @@ export function TransactionTable({
                   {formatCurrency(transaction.amount)}
                 </span>
               </TableCell>
-              <TableCell className="whitespace-nowrap">
+              <TableCell className="whitespace-nowrap px-2 py-2">
                 {transaction.attachments.length > 0 ? (
                   <div className="flex gap-1">
                     {transaction.attachments.map((attachment) => (
@@ -148,36 +149,39 @@ export function TransactionTable({
                         key={attachment.id}
                         variant="ghost"
                         size="sm"
+                        className="h-7 px-2 text-xs"
                         onClick={() => handleDownloadAttachment(attachment)}
                       >
-                        <Download className="h-4 w-4 mr-1" />
+                        <Download className="h-3 w-3 mr-1" />
                         {transaction.attachments.length === 1
-                          ? 'Download'
+                          ? 'DL'
                           : transaction.attachments.indexOf(attachment) + 1
                         }
                       </Button>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-muted-foreground">-</span>
+                  <span className="text-muted-foreground text-xs">-</span>
                 )}
               </TableCell>
               {canEdit && (
-                <TableCell className="whitespace-nowrap">
-                  <div className="flex gap-2">
+                <TableCell className="whitespace-nowrap px-2 py-2">
+                  <div className="flex gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-7 w-7 p-0"
                       onClick={() => onEdit?.(transaction)}
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit className="h-3 w-3" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-7 w-7 p-0"
                       onClick={() => onDelete?.(transaction.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 </TableCell>
