@@ -72,54 +72,54 @@ export function MemberTable({
   }
 
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('name')}
             >
               Nama {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('email')}
             >
               Email {sortField === 'email' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('role')}
             >
               Peran {sortField === 'role' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('status')}
             >
               Status {sortField === 'status' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('joinedAt')}
             >
               Bergabung {sortField === 'joinedAt' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            {canEdit && <TableHead>Aksi</TableHead>}
+            {canEdit && <TableHead className="whitespace-nowrap">Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {sortedMembers.map((member) => (
             <TableRow key={member.id}>
-              <TableCell className="font-medium">
+              <TableCell className="font-medium whitespace-nowrap">
                 {member.name}
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 {member.email}
               </TableCell>
-              <TableCell>
-                <Badge 
+              <TableCell className="whitespace-nowrap">
+                <Badge
                   variant={
                     member.role === 'admin' ? 'default' :
                     member.role === 'finance' ? 'secondary' : 'outline'
@@ -128,19 +128,19 @@ export function MemberTable({
                   {member.role}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 <Badge
                   variant={member.status === 'AKTIF' ? 'default' : 'destructive'}
                 >
                   {member.status}
                 </Badge>
               </TableCell>
-              <TableCell className="font-mono">
+              <TableCell className="font-mono whitespace-nowrap">
                 {formatDate(member.joinedAt)}
               </TableCell>
               {canEdit && (
-                <TableCell>
-                  <div className="flex gap-6">
+                <TableCell className="whitespace-nowrap">
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"

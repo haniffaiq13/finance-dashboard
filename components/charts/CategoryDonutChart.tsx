@@ -65,7 +65,7 @@ export function CategoryDonutChart({ data }: CategoryDonutChartProps) {
   }));
 
   return (
-    <div className="w-full h-[350px]">
+    <div className="w-full h-[300px] sm:h-[350px] relative">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -74,8 +74,8 @@ export function CategoryDonutChart({ data }: CategoryDonutChartProps) {
             cy="50%"
             labelLine={false}
             label={CustomLabel}
-            outerRadius={120}
-            innerRadius={60}
+            outerRadius={80}
+            innerRadius={50}
             fill="#8884d8"
             dataKey="amount"
           >
@@ -84,9 +84,10 @@ export function CategoryDonutChart({ data }: CategoryDonutChartProps) {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            verticalAlign="bottom" 
+          <Legend
+            verticalAlign="bottom"
             height={36}
+            wrapperStyle={{ fontSize: '12px' }}
             formatter={(value, entry: any) => (
               <span style={{ color: entry.color }}>
                 {value} ({entry.payload.percentage}%)
@@ -97,10 +98,10 @@ export function CategoryDonutChart({ data }: CategoryDonutChartProps) {
       </ResponsiveContainer>
       
       {/* Center text showing total */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: '-20px' }}>
         <div className="text-center">
-          <div className="text-sm text-muted-foreground">Total</div>
-          <div className="text-lg font-bold">{formatCurrency(totalAmount)}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground">Total</div>
+          <div className="text-sm sm:text-lg font-bold">{formatCurrency(totalAmount)}</div>
         </div>
       </div>
     </div>

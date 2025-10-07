@@ -39,9 +39,9 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
   const hasNegativeValues = data.some(item => item.balance < 0);
 
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[300px] sm:h-[350px]">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+        <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
           <defs>
             <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
@@ -53,14 +53,18 @@ export function TrendLineChart({ data }: TrendLineChartProps) {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="month" 
+          <XAxis
+            dataKey="month"
             tickFormatter={formatMonth}
-            fontSize={12}
+            fontSize={11}
+            angle={-45}
+            textAnchor="end"
+            height={60}
           />
-          <YAxis 
+          <YAxis
             tickFormatter={(value) => formatCurrency(value)}
-            fontSize={12}
+            fontSize={10}
+            width={80}
           />
           <Tooltip content={<CustomTooltip />} />
           <Area

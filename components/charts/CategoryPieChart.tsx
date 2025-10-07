@@ -65,7 +65,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
   }));
 
   return (
-    <div className="w-full h-[350px]">
+    <div className="w-full h-[300px] sm:h-[350px]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -74,7 +74,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
             cy="50%"
             labelLine={false}
             label={CustomLabel}
-            outerRadius={120}
+            outerRadius={80}
             fill="#8884d8"
             dataKey="amount"
           >
@@ -83,9 +83,10 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            verticalAlign="bottom" 
+          <Legend
+            verticalAlign="bottom"
             height={36}
+            wrapperStyle={{ fontSize: '12px' }}
             formatter={(value, entry: any) => (
               <span style={{ color: entry.color }}>
                 {value} ({entry.payload.percentage}%)

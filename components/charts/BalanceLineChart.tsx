@@ -36,20 +36,24 @@ export function BalanceLineChart({ data }: BalanceLineChartProps) {
   };
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[300px] sm:h-[350px] lg:h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+        <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis 
-            dataKey="month" 
+          <XAxis
+            dataKey="month"
             tickFormatter={formatMonth}
-            fontSize={12}
+            fontSize={11}
             stroke="#64748b"
+            angle={-45}
+            textAnchor="end"
+            height={60}
           />
-          <YAxis 
+          <YAxis
             tickFormatter={(value) => formatCurrency(value)}
-            fontSize={12}
+            fontSize={10}
             stroke="#64748b"
+            width={80}
           />
           <Tooltip content={<CustomTooltip />} />
           <Line 

@@ -79,56 +79,56 @@ export function TransactionTable({
   }
 
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('date')}
             >
               Tanggal {sortField === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('description')}
             >
               Deskripsi {sortField === 'description' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted"
+            <TableHead
+              className="cursor-pointer hover:bg-muted whitespace-nowrap"
               onClick={() => handleSort('category')}
             >
               Kategori {sortField === 'category' && (sortDirection === 'asc' ? '↑' : '↓')}
             </TableHead>
-            <TableHead>Tipe</TableHead>
-            <TableHead className="text-right">Jumlah</TableHead>
-            <TableHead>Lampiran</TableHead>
-            {canEdit && <TableHead>Aksi</TableHead>}
+            <TableHead className="whitespace-nowrap">Tipe</TableHead>
+            <TableHead className="text-right whitespace-nowrap">Jumlah</TableHead>
+            <TableHead className="whitespace-nowrap">Lampiran</TableHead>
+            {canEdit && <TableHead className="whitespace-nowrap">Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {sortedTransactions.map((transaction) => (
             <TableRow key={transaction.id}>
-              <TableCell className="font-mono">
+              <TableCell className="font-mono whitespace-nowrap">
                 {formatDate(transaction.date)}
               </TableCell>
               <TableCell>
-                <div className="max-w-[200px] truncate">
+                <div className="max-w-[200px] min-w-[150px] truncate">
                   {transaction.description}
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 <Badge variant="outline">{transaction.category}</Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 <Badge
                   variant={transaction.type === 'MASUK' ? 'default' : 'destructive'}
                 >
                   {transaction.type}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right font-mono">
+              <TableCell className="text-right font-mono whitespace-nowrap">
                 <span
                   className={
                     transaction.type === 'MASUK'
@@ -140,7 +140,7 @@ export function TransactionTable({
                   {formatCurrency(transaction.amount)}
                 </span>
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 {transaction.attachments.length > 0 ? (
                   <div className="flex gap-1">
                     {transaction.attachments.map((attachment) => (
@@ -151,8 +151,8 @@ export function TransactionTable({
                         onClick={() => handleDownloadAttachment(attachment)}
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        {transaction.attachments.length === 1 
-                          ? 'Download' 
+                        {transaction.attachments.length === 1
+                          ? 'Download'
                           : transaction.attachments.indexOf(attachment) + 1
                         }
                       </Button>
@@ -163,8 +163,8 @@ export function TransactionTable({
                 )}
               </TableCell>
               {canEdit && (
-                <TableCell>
-                  <div className="flex gap-6">
+                <TableCell className="whitespace-nowrap">
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
