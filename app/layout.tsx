@@ -6,8 +6,8 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Internal Dashboard',
-  description: 'Dashboard internal organisasi dengan kontrol akses berbasis peran',
+  title: '[Katar Unit 03] -- Internal Dashboard',
+  description: 'Dashboard internal Katar Unit 03',
 };
 
 export default function RootLayout({

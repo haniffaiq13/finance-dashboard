@@ -112,7 +112,7 @@ export const getNavigationItems = (role: Role): NavItem[] => {
   // Semua role boleh lihat Keuangan (read-only utk non-finance)
   const roleItems: NavItem[] = [
     { href: "/keuangan", label: "Keuangan", icon: "DollarSign" },
-    { href: "/user", label: "user", icon: "Users" }, // CRUD hanya writer
+    { href: "/anggota", label: "Anggota", icon: "Users" }, // CRUD hanya writer
   ]
 
   const endItems: NavItem[] = [{ href: "/profile", label: "Profile", icon: "User" }]
